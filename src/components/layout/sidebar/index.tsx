@@ -1,10 +1,27 @@
+import { Link } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+
 const Sidebar = () => {
+  const { role } = useAuth();
+
   return (
-    <div className="fixed flex flex-col items-center w-24 h-screen mt-16 text-white bg-black pt-7">
-      <div className="flex flex-col gap-8 w-fit">
-        <button>Home</button>
-        <button>Home</button>
-        <button>Home</button>
+    <div className="flex flex-col items-center w-24 h-screen pt-4 text-white bg-black shadow-md">
+      <div className="flex flex-col gap-8 text-sm">
+        {role === "user" && (
+          <>
+            <Link to="/user/dashboard" className="hover:text-yellow-400">Dashboard</Link>
+            <Link to="/user/evaluations" className="hover:text-yellow-400">Avaliações</Link>
+            <Link to="/user/catalog" className="hover:text-yellow-400">Catálogo</Link>
+          </>
+        )}
+        {role === "company" && (
+          <>
+            <Link to="/company/dashboard" className="hover:text-yellow-400">Dashboard</Link>
+            <Link to="/company/reviews" className="hover:text-yellow-400">Avaliações</Link>
+            <Link to="/company/feedbacks" className="hover:text-yellow-400">Feedbacks</Link>
+            <Link to="/company/products" className="hover:text-yellow-400">Produtos/Serviços</Link>
+          </>
+        )}
       </div>
     </div>
   );

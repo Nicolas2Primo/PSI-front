@@ -1,18 +1,19 @@
 import { Outlet } from "react-router";
 import Navbar from "../components/layout/navbar";
 import Sidebar from "../components/layout/sidebar";
+import { useAuth } from "../context/AuthContext";
 
 const Layout = () => {
+  const { role } = useAuth();
   return (
-    <div>
+    <div className="w-screen h-full overflow-hidden bg-gray-200 ">
       <Navbar />
-      <Sidebar />
-      <main className="p-4 pt-20 ml-24 ">
-        {/* Aqui serão renderizadas as páginas filhas */}
+      
+      <main className={` pt-16 w-full h-screen flex `}>
+        {role && <Sidebar />}
         <Outlet />
       </main>
 
-      <footer>{/* Conteúdo do rodapé */}</footer>
     </div>
   );
 };
