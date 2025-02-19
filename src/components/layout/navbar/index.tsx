@@ -12,7 +12,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className=" flex items-center justify-between w-screen overflow-hidden h-20 text-white bg-black px-7 shadow-md z-10">
+    <div className=" flex items-center justify-between w-screen  h-20 text-white bg-black px-7 shadow-md z-10">
       <Link to="/" className="text-xl font-bold">
         TrustScore
       </Link>
