@@ -12,18 +12,24 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed flex items-center justify-between w-screen h-16 text-white bg-black px-7 shadow-md z-10">
-      <Link to="/" className="text-xl font-bold">TrustScore</Link>
+    <div className=" flex items-center justify-between w-screen overflow-hidden h-20 text-white bg-black px-7 shadow-md z-10">
+      <Link to="/" className="text-xl font-bold">
+        TrustScore
+      </Link>
       <div className="relative flex gap-8">
         {role === null ? (
           <>
-            <Link to="/login" className="hover:text-yellow-400">Login</Link>
-            <Link to="/register" className="hover:text-yellow-400">Register</Link>
+            <Link to="/login" className="hover:text-yellow-400">
+              Login
+            </Link>
+            <Link to="/register" className="hover:text-yellow-400">
+              Register
+            </Link>
           </>
         ) : (
           <>
             <div className="relative">
-              <button 
+              <button
                 onClick={() => {
                   setIsNotifOpen(!isNotifOpen);
                   setIsUserOpen(false);
@@ -41,7 +47,7 @@ const Navbar = () => {
               )}
             </div>
             <div className="relative">
-              <button 
+              <button
                 onClick={() => {
                   setIsUserOpen(!isUserOpen);
                   setIsNotifOpen(false);
@@ -55,8 +61,8 @@ const Navbar = () => {
                   <div className="p-2 border-b">
                     <p className="text-sm">Informações do usuário</p>
                   </div>
-                  <button 
-                    onClick={handleLogout} 
+                  <button
+                    onClick={handleLogout}
                     className="w-full text-left p-2 text-sm hover:bg-gray-200"
                   >
                     Logout

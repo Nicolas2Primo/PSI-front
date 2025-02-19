@@ -6,14 +6,13 @@ import { useAuth } from "../context/AuthContext";
 const Layout = () => {
   const { role } = useAuth();
   return (
-    <div className="w-screen h-full overflow-hidden bg-gray-200 ">
+    <div className="w-full h-screen overflow-hidden bg-gray-200 ">
       <Navbar />
-      
-      <main className={` pt-16 w-full h-screen flex `}>
+
+      <main className={` w-full h-screen flex pb-20 `}>
         {role && <Sidebar />}
         <Outlet />
       </main>
-
     </div>
   );
 };
