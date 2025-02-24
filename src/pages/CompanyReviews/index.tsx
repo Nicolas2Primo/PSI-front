@@ -1,25 +1,35 @@
-import React from "react";
+// CompanyReviews.tsx
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useProducts } from "../../context/ProductContext";
-import { useEvaluations } from "../../context/EvaluationContext";
+import { useEvaluations, Evaluation } from "../../context/EvaluationContext";
+import Modal from "../../components/modal";
 
 const CompanyReviews = () => {
   const { companyName } = useAuth();
   const { products } = useProducts();
-  const { evaluations } = useEvaluations();
+  const { evaluations, updateEvaluation } = useEvaluations();
+  const [respondingEvaluation, setRespondingEvaluation] =
+    useState<Evaluation | null>(null);
+  const [companyResponse, setCompanyResponse] = useState("");
 
-  // Filtra os produtos da empresa logada
   const companyProducts = products.filter(
     (product) => product.company === companyName
   );
 
-  // Agrupa as avaliações por produto
-  const reviewsByProduct: { [key: number]: any[] } = {};
+  const reviewsByProduct: { [key: number]: Evaluation[] } = {};
   companyProducts.forEach((product) => {
     reviewsByProduct[product.id] = evaluations.filter(
       (ev) => ev.productId === product.id
     );
   });
+
+  const handleRespond = () => {
+    if (respondingEvaluation) {
+      updateEvaluation(respondingEvaluation.id, { companyResponse });
+      setRespondingEvaluation(null);
+    }
+  };
 
   return (
     <div className="w-full h-full p-4 overflow-auto">
@@ -37,6 +47,23 @@ const CompanyReviews = () => {
                   </span>
                 </div>
                 <p>{review.feedback}</p>
+                {review.companyResponse && (
+                  <div className="mt-2 p-2 border rounded bg-gray-100">
+                    <strong>Sua Resposta:</strong>
+                    <p>{review.companyResponse}</p>
+                  </div>
+                )}
+                {!review.companyResponse && (
+                  <button
+                    onClick={() => {
+                      setRespondingEvaluation(review);
+                      setCompanyResponse("");
+                    }}
+                    className="mt-2 text-blue-500"
+                  >
+                    Responder
+                  </button>
+                )}
               </div>
             ))
           ) : (
@@ -46,6 +73,24 @@ const CompanyReviews = () => {
           )}
         </div>
       ))}
+      {respondingEvaluation && (
+        <Modal onClose={() => setRespondingEvaluation(null)}>
+          <div className="p-4">
+            <h2 className="text-xl font-bold mb-4">Responder Avaliação</h2>
+            <textarea
+              value={companyResponse}
+              onChange={(e) => setCompanyResponse(e.target.value)}
+              className="w-full p-2 border rounded mb-4"
+            ></textarea>
+            <button
+              onClick={handleRespond}
+              className="p-2 bg-black text-white rounded"
+            >
+              Enviar Resposta
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

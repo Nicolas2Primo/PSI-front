@@ -9,14 +9,11 @@ const Sidebar = () => {
       <div className="flex flex-col gap-8 text-sm">
         {role === "user" && (
           <>
+            <Link to="/user/catalog" className="hover:text-yellow-400">
+              Home
+            </Link>
             <Link to="/user/dashboard" className="hover:text-yellow-400">
               Dashboard
-            </Link>
-            <Link to="/user/evaluations" className="hover:text-yellow-400">
-              Avaliações
-            </Link>
-            <Link to="/user/catalog" className="hover:text-yellow-400">
-              Catálogo
             </Link>
           </>
         )}

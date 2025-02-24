@@ -1,18 +1,18 @@
+// AppRoutes.tsx (atualizado)
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import Layout from "../layout";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import UserDashboard from "../pages/UserDashBoard";
-import UserReviews from "../pages/UserReviews";
-import ProductCatalog from "../pages/ProductCatalog";
-import ProductEvaluationsPage from "../pages/ProductEvaluations"; // Nova rota de avaliações
-// Rotas para empresas
+import ProductManagement from "../pages/ProductManagement";
 import CompanyDashboard from "../pages/CompanyDashboard";
 import CompanyReviews from "../pages/CompanyReviews";
 import CompanyFeedbacks from "../pages/CompanyFeedbacks";
 import CompanyProducts from "../pages/CompanyProducts";
+import CompanySettings from "../pages/CompanySettings";
 import ProtectedRoute from "./ProtectedRoute";
+import PublicRoute from "./PublicRoute"; // Importa a rota pública
 import { useAuth } from "../context/AuthContext";
 
 const AppRoutes = () => {
@@ -21,9 +21,30 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* Páginas Públicas */}
-        <Route index element={<Home />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
+        <Route
+          index
+          element={
+            <PublicRoute>
+              <Home />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
 
         {/* Rotas para Usuários */}
         <Route
@@ -35,10 +56,7 @@ const AppRoutes = () => {
           }
         >
           <Route path="dashboard" element={<UserDashboard />} />
-          {/* Removemos "reviews" e incluímos "evaluations" */}
-          <Route path="evaluations" element={<ProductEvaluationsPage />} />
-          <Route path="catalog" element={<ProductCatalog />} />
-          <Route path="reviews" element={<UserReviews />} />
+          <Route path="catalog" element={<ProductManagement />} />
         </Route>
 
         {/* Rotas para Empresas */}
@@ -54,6 +72,7 @@ const AppRoutes = () => {
           <Route path="reviews" element={<CompanyReviews />} />
           <Route path="feedbacks" element={<CompanyFeedbacks />} />
           <Route path="products" element={<CompanyProducts />} />
+          <Route path="settings" element={<CompanySettings />} />
         </Route>
       </Route>
     </Routes>

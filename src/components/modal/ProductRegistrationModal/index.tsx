@@ -1,15 +1,24 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import { useProducts } from "../../../context/ProductContext";
+import { useAuth } from "../../../context/AuthContext";
 
 interface ProductRegistrationModalProps {
   onClose: () => void;
 }
 
-const ProductRegistrationModal: React.FC<ProductRegistrationModalProps> = ({ onClose }) => {
+const ProductRegistrationModal: React.FC<ProductRegistrationModalProps> = ({
+  onClose,
+}) => {
   const { addProduct } = useProducts();
+  const { role, userEmail, companyName } = useAuth();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [company, setCompany] = useState("");
+  // Para usuário, o campo "company" pode ser preenchido manualmente, mas para empresa, usamos o nome da empresa
+  const [companyInput, setCompanyInput] = useState(
+    role === "company" ? companyName : ""
+  );
+  const [category, setCategory] = useState("");
+  const [location, setLocation] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -23,14 +32,29 @@ const ProductRegistrationModal: React.FC<ProductRegistrationModalProps> = ({ onC
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    addProduct({ name, description, company, imageUrl: preview || "" });
+    // Define origin conforme role: "company" se empresa, senão "user"
+    const origin = role === "company" ? "company" : "user";
+    addProduct({
+      name,
+      description,
+      company: companyInput,
+      imageUrl: preview || "",
+      category,
+      location,
+      origin,
+    });
     onClose();
   };
 
   return (
-    <div className="w-full">
-      <h1 className="mb-4 text-2xl font-bold">Cadastro de Novo Produto/Serviço</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col max-w-lg gap-4">
+    <div className="w-full h-full flex flex-col justify-center items-center ">
+      <h1 className="mb-4 text-2xl font-bold">
+        Cadastro de Novo Produto/Serviço
+      </h1>
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full flex-col max-w-lg gap-4"
+      >
         <input
           type="text"
           placeholder="Nome do produto/serviço"
@@ -46,11 +70,29 @@ const ProductRegistrationModal: React.FC<ProductRegistrationModalProps> = ({ onC
           className="p-2 border rounded"
           required
         />
+        {role !== "company" && (
+          <input
+            type="text"
+            placeholder="Empresa"
+            value={companyInput}
+            onChange={(e) => setCompanyInput(e.target.value)}
+            className="p-2 border rounded"
+            required
+          />
+        )}
         <input
           type="text"
-          placeholder="Empresa"
-          value={company}
-          onChange={(e) => setCompany(e.target.value)}
+          placeholder="Categoria"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="p-2 border rounded"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Localização"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
           className="p-2 border rounded"
           required
         />
@@ -59,7 +101,6 @@ const ProductRegistrationModal: React.FC<ProductRegistrationModalProps> = ({ onC
           accept="image/*"
           onChange={handleImageChange}
           className="p-2"
-          required
         />
         {preview && (
           <img
