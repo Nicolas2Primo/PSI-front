@@ -19,15 +19,15 @@ const ViewEvaluationsModal: React.FC<ViewEvaluationsModalProps> = ({
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Avaliações - {productName}</h2>
+      <h2 className="text-2xl font-bold mb-4 ">Avaliações - {productName}</h2>
       {productEvaluations.length === 0 ? (
         <p className="text-gray-600">
           Nenhuma avaliação cadastrada para este produto.
         </p>
       ) : (
         productEvaluations.map((ev) => (
-          <div key={ev.id} className="p-2 border-b">
-            <div className="flex items-center mb-1">
+          <div key={ev.id} className="p-2 border-b ">
+            <div className="flex items-center mb-1 ">
               {Array.from({ length: 5 }, (_, i) => (
                 <span
                   key={i}

@@ -1,8 +1,10 @@
-import React from "react";
+import { useState } from "react";
 import { useEvaluations } from "../../context/EvaluationContext";
-import { useProducts } from "../../context/ProductContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useProducts, Product } from "../../context/ProductContext";
+import { useNavigate, useLocation } from "react-router";
 import { useAuth } from "../../context/AuthContext";
+import EditProductModal from "../../components/modal/EditProductModal";
+import Modal from "../../components/modal";
 
 const UserDashboard = () => {
   const { evaluations } = useEvaluations();
@@ -10,6 +12,8 @@ const UserDashboard = () => {
   const { userEmail } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [selectedProductToEdit, setSelectedProductToEdit] =
+    useState<Product | null>(null);
 
   // Lê o parâmetro de consulta 'view'
   const queryParams = new URLSearchParams(location.search);
@@ -46,6 +50,12 @@ const UserDashboard = () => {
                 ))}
               </div>
               <p>{evaluation.feedback}</p>
+              {evaluation.companyResponse && (
+                <p className="mt-1 text-sm text-green-700">
+                  <strong>Feedback Recebido:</strong>{" "}
+                  {evaluation.companyResponse}
+                </p>
+              )}
             </div>
           ))
         )}
@@ -53,8 +63,12 @@ const UserDashboard = () => {
     );
   }
 
-  // Caso 'view' seja 'feedbacks', exibe os feedbacks pendentes
+  // Caso 'view' seja 'feedbacks', exibe os feedbacks recebidos
   if (view === "feedbacks") {
+    const feedbacksReceived = evaluations.filter(
+      (evaluation) =>
+        evaluation.companyResponse && evaluation.companyResponse.trim() !== ""
+    );
     return (
       <div className="w-full h-full p-4">
         <button
@@ -63,8 +77,35 @@ const UserDashboard = () => {
         >
           Voltar
         </button>
-        <h2 className="text-2xl font-bold mb-4">Feedbacks Pendentes</h2>
-        <p className="text-gray-600">Ainda não há feedbacks pendentes.</p>
+        <h2 className="text-2xl font-bold mb-4">Feedbacks Recebidos</h2>
+        {feedbacksReceived.length === 0 ? (
+          <p className="text-gray-600">Nenhum feedback recebido.</p>
+        ) : (
+          feedbacksReceived.map((evaluation) => (
+            <div key={evaluation.id} className="p-4 border-b">
+              <div className="flex items-center mb-1">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <span
+                    key={i}
+                    className={
+                      i < evaluation.rating
+                        ? "text-yellow-500"
+                        : "text-gray-300"
+                    }
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+              <p>
+                <strong>Avaliação:</strong> {evaluation.feedback}
+              </p>
+              <p className="mt-1 text-sm text-green-700">
+                <strong>Feedback Recebido:</strong> {evaluation.companyResponse}
+              </p>
+            </div>
+          ))
+        )}
       </div>
     );
   }
@@ -102,11 +143,7 @@ const UserDashboard = () => {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() =>
-                    alert(
-                      `Editar produto ${product.id} (implementar funcionalidade)`
-                    )
-                  }
+                  onClick={() => setSelectedProductToEdit(product)}
                   className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                 >
                   Editar
@@ -120,6 +157,14 @@ const UserDashboard = () => {
               </div>
             </div>
           ))
+        )}
+        {selectedProductToEdit && (
+          <Modal onClose={() => setSelectedProductToEdit(null)}>
+            <EditProductModal
+              product={selectedProductToEdit}
+              onClose={() => setSelectedProductToEdit(null)}
+            />
+          </Modal>
         )}
       </div>
     );
@@ -160,13 +205,21 @@ const UserDashboard = () => {
           <h2 className="text-lg font-semibold">Média de Avaliação</h2>
           <p className="text-2xl">{averageRating}</p>
         </div>
-        {/* Card Feedbacks Pendentes */}
+        {/* Card Feedbacks Recebidos */}
         <div
           onClick={() => navigate("?view=feedbacks")}
           className="bg-white p-4 rounded shadow cursor-pointer hover:shadow-lg transition-shadow"
         >
-          <h2 className="text-lg font-semibold">Feedbacks Pendentes</h2>
-          <p className="text-2xl">{pendingFeedbacks}</p>
+          <h2 className="text-lg font-semibold">Feedbacks Recebidos</h2>
+          <p className="text-2xl">
+            {
+              evaluations.filter(
+                (evaluation) =>
+                  evaluation.companyResponse &&
+                  evaluation.companyResponse.trim() !== ""
+              ).length
+            }
+          </p>
         </div>
         {/* Card Produtos/Serviços Criados */}
         <div

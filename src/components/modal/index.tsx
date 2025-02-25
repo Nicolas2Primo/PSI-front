@@ -28,7 +28,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, children }) => {
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div
         ref={modalRef}
-        className="z-10 p-6 w-[50%] h-[60%] bg-white rounded shadow-lg"
+        className="z-10 p-6 w-[50%] h-[60%] overflow-auto bg-white rounded shadow-lg"
       >
         {children}
       </div>
